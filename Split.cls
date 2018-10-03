@@ -1,6 +1,6 @@
 Sub Split():
 
-' un merge
+' Un-Merge
 
 Dim cell As Range, joinedCells As Range
 
@@ -12,6 +12,7 @@ For Each cell In Range("E4:I60")
     End If
 Next
 
+' Split to Worksheets
 
     Const NameCol = "B"
     Const HeaderRow = 3
