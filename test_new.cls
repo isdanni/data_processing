@@ -1,4 +1,4 @@
-Sub LoopAllExcelFilesInFolder()
+Sub LoopAllExcelFiles()
 'PURPOSE: To loop through all Excel files in a user specified folder and perform a set task on them
 'SOURCE: www.TheSpreadsheetGuru.com
 
@@ -41,26 +41,27 @@ NextCode:
     
     'Ensure Workbook has opened before moving on to next line of code
       DoEvents
-      
-      
-     Dim MainWorkBook As Workbook
-     Dim NewWorkBook As Workbook
-     Dim Pointer As Long
-     Dim StrFile As String
-      
-      ' Un-Merge
+    
+    '---------------------MY OPERATION-----------------------------
+    
+      ' 1. Un-Merge -----------------------------------------------
+    Option Explicit
+    Dim MainWorkBook As Workbook
+    Dim NewWorkBook As Workbook
+    Dim Pointer As Long
+    Dim StrFile As String
+    Dim cell As Range, joinedCells As Range
 
-     Dim cell As Range, joinedCells As Range
-
-For Each cell In Range("E4:I60")
-    If cell.MergeCells Then
-        Set joinedCells = cell.MergeArea
-        cell.MergeCells = False
-        joinedCells.Value = cell.Value
-    End If
-Next
-
-' Split to Worksheets
+    For Each cell In Range("E4:I60")
+        If cell.MergeCells Then
+            Set joinedCells = cell.MergeArea
+            cell.MergeCells = False
+            joinedCells.Value = cell.Value
+        End If
+    Next
+    
+    
+    ' 2. Split to Worksheets-------------------------------------------
 
     Const NameCol = "B"
     Const HeaderRow = 3
@@ -108,14 +109,16 @@ For Pointer = 2 To MainWorkBook.Sheets.Count
 Next Pointer
 
 Application.ScreenUpdating = True
-
+    
+    
+    '--------------------------------FINISHED---------------------------
     
     'Save and Close Workbook
       wb.Close SaveChanges:=True
       
     'Ensure Workbook has closed before moving on to next line of code
       DoEvents
-    
+
     'Get next file name
       myFile = Dir
   Loop
@@ -130,4 +133,3 @@ ResetSettings:
     Application.ScreenUpdating = True
 
 End Sub
-      
