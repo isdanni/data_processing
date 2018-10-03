@@ -1,6 +1,7 @@
 Sub LoopAllExcelFiles()
 'PURPOSE: To loop through all Excel files in a user specified folder and perform a set task on them
 'SOURCE: www.TheSpreadsheetGuru.com
+  ' https://www.thespreadsheetguru.com/the-code-vault/2014/4/23/loop-through-all-excel-files-in-a-given-folder
 
 Dim wb As Workbook
 Dim myPath As String
