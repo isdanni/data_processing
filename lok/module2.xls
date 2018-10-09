@@ -1,0 +1,99 @@
+ Sub SplitData(currentpath As String)
+ ' UN MERGE
+            Dim cell As Range, joinedCells As Range
+
+            For Each cell In Range("E4:I60")
+                If cell.MergeCells Then
+                    Set joinedCells = cell.MergeArea
+                    cell.MergeCells = False
+                    joinedCells.Value = cell.Value
+                End If
+            Next
+
+
+            ' Split to worksheets
+            Const NameCol = "B"
+            Const HeaderRow = 3
+            Const FirstRow = 4
+            Dim SrcSheet As Worksheet
+            Dim TrgSheet As Worksheet
+            Dim SrcRow As Long
+            Dim lastrow As Long
+            Dim TrgRow As Long
+            Dim Student As String
+            Application.ScreenUpdating = False
+            Set SrcSheet = ActiveSheet
+            lastrow = SrcSheet.Cells(SrcSheet.Rows.Count, NameCol).End(xlUp).Row
+            For SrcRow = FirstRow To lastrow
+                Student = SrcSheet.Cells(SrcRow, NameCol).Value
+                Set TrgSheet = Nothing
+                On Error Resume Next
+                Set TrgSheet = Worksheets(Student)
+                On Error GoTo 0
+                If TrgSheet Is Nothing Then
+                    Set TrgSheet = Worksheets.Add(After:=Worksheets(Worksheets.Count))
+                    TrgSheet.Name = Student
+                    SrcSheet.Rows(HeaderRow).Copy Destination:=TrgSheet.Rows(HeaderRow)
+                End If
+            TrgRow = TrgSheet.Cells(TrgSheet.Rows.Count, NameCol).End(xlUp).Row + 1
+            SrcSheet.Rows(SrcRow).Copy Destination:=TrgSheet.Rows(TrgRow)
+            Next SrcRow
+            Application.ScreenUpdating = True
+            
+            
+            
+            ' Export worksheet to workbook
+            Dim Pointer As Long
+        
+            Workbooks(currentpath).Activate
+            'MsgBox ActiveWorkbook.FullName
+            Set MainWorkBook = ActiveWorkbook
+            'Range("E4").Value = MainWorkBook.Sheets.Count
+
+            Application.ScreenUpdating = False   'Enhance the performance
+            For Pointer = 2 To MainWorkBook.Sheets.Count
+                'Set NewWorkbook = Workbooks.Add
+                'MainWorkBook.Sheets(Pointer).Copy After:=NewWorkbook.Sheets(1)
+                Application.DisplayAlerts = False
+                'NewWorkbook.Sheets(1).Delete
+                Application.DisplayAlerts = False
+                
+                'DirFile = "D:\My Documents\vesselit\" & MainWorkBook.Sheets(Pointer).Name & ".xls"
+                'With NewWorkbook
+                    'If Dir(DirFile) = "" Then
+                        ' if not exists, save as
+                        '.SaveAs Filename:="D:\My Documents\vesselit\" & MainWorkBook.Sheets(Pointer).Name & ".xls"
+                    'Else
+                        ' if exists, copy and paste
+                        ' Get last row of existing workbook
+                    If MainWorkBook.Sheets(Pointer).Name Like "*PC*" Then
+                        DirFile = "D:\My Documents\combined\PC.xls"
+                    ElseIf MainWorkBook.Sheets(Pointer).Name Like "*Monitor*" Then
+                        DirFile = "D:\My Documents\combined\Monitor.xls"
+                    ElseIf MainWorkBook.Sheets(Pointer).Name Like "*Printer*" Then
+                        DirFile = "D:\My Documents\combined\Printer.xls"
+                    Else
+                        DirFile = "D:\My Documents\combined\Others.xls"
+                    End If
+                    
+                        Set Wb = Workbooks.Open(DirFile)
+                        Dim wblastrow As Integer
+                        wblastrow = Wb.Worksheet.Range("C100000").End(xlUp).Row
+                        
+                        ' Copy current workbook range (exclude header)
+                        Dim newlastrow As Integer
+                        newlastrow = NewWorkbook.Worksheet.Range("C100000").End(xlUp).Row
+                        NewWorkbook.Worksheet.Range("A4" & newlastrow).Select
+                        NewWorkbook.Worksheet.Range("A4" & newlastrow).Copy
+                        
+                        ' Paste after specific row
+                        Wb.Worksheet.Range(wblastrow, M100000).Offset(RowOffset).EntireRow.Insert Shift:=xlShiftDown
+                        Wb.Close SaveChanges:=True
+                    'End If
+                'End With
+                'NewWorkbook.Close SaveChanges:=True
+            Next Pointer
+
+            Application.ScreenUpdating = True
+End Sub
+
