@@ -1,0 +1,55 @@
+Sub PerformCopy()
+'==================== call ================================
+' This Macro copies all files from subfolders to dest folder
+    Dim FSO As Object
+    Dim Source, Dest As String
+    Dim xFileDialog As FileDialog
+    
+    ' define source folder
+    On Error Resume Next
+    Set xFileDialog = Application.FileDialog(msoFileDialogFolderPicker)
+    xFileDialog.AllowMultiSelect = False
+    xFileDialog.Title = "Select a folder"
+    If xFileDialog.Show = -1 Then
+        Source = xFileDialog.SelectedItems(1)
+    End If
+    If Source = "" Then Exit Sub
+    
+    ' define dest folder
+    On Error Resume Next
+    Set xFileDialog = Application.FileDialog(msoFileDialogFolderPicker)
+    xFileDialog.AllowMultiSelect = False
+    xFileDialog.Title = "Select a folder"
+    If xFileDialog.Show = -1 Then
+        Dest = xFileDialog.SelectedItems(1)
+    End If
+    If Dest = "" Then Exit Sub
+
+    CopyFiles Source & "\", Dest & "\"
+'==================== Copy sub ===========================
+End Sub
+
+
+Public Sub CopyFiles(ByVal strPath As String, ByVal strTarget As String)
+Dim FSO As Object
+Dim FileInFromFolder As Object
+Dim FolderInFromFolder As Object
+Dim Fdate As Long
+Dim intSubFolderStartPos As Long
+Dim strFolderName As String
+
+Set FSO = CreateObject("scripting.filesystemobject")
+'First loop through files
+    For Each FileInFromFolder In FSO.GetFolder(strPath).Files
+        Fdate = Int(FileInFromFolder.DateLastModified)
+            FileInFromFolder.Copy strTarget
+    Next
+
+    'Next loop throug folders
+    For Each FolderInFromFolder In FSO.GetFolder(strPath).SubFolders
+            For Each FileInFromFolder In FSO.GetFolder(FolderInFromFolder).Files
+                    FileInFromFolder.Copy strTarget
+            Next
+    Next
+
+End Sub
