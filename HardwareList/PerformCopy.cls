@@ -1,5 +1,5 @@
 Public Sub PerformCopy()
-    CopyFiles "D:\LIDA7\OneDrive - Orient Overseas Container Line Ltd\Projects\9. Hardware_List\TEST\VESSEL IT - Inventory\", "D:\LIDA7\OneDrive - Orient Overseas Container Line Ltd\Projects\9. Hardware_List\TEST\VESSEL IT - Inventory\TEST\"
+    CopyFiles "source foler path\", "target folder path\"
 End Sub
 
 ' First Macro
